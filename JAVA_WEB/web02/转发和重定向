@@ -1,0 +1,102 @@
+一、回顾
+1.Servlet的作用&如何创建一个Servlet    陈宏禹
+2.说一说Servlet的生命周期方法及其特点  焦晓冰
+3.说一说Servlet的大体运行流程 继承HttpServlet如何运作的？   陈倩
+4.说一说ServletConfig的作用    何国健
+5.说一说你了解哪些web服务器软件   徐管仲  Nginx
+
+二、进入的内容
+1.关于使用maven创建javaWeb工程
+    用法同之前创建java工程，有些许不同
+    ① <packaging>war</packaging>
+    强调一点：在该pom.xml文件的时候，建议手动导入
+    因为自动导入，当你的dependency没有写完，会下载一些乱七八糟的东西
+    ②在src/main下面创建webapp目录
+        在webapp目录下创建WEB-INF目录
+        在WEB-INF下，将昨天的web.xml copy进来
+
+2.ServletContext
+    注意：它是最大的一个域对象，可以在不同的资源之间共享数据
+    1.作用
+    // 2.1 获取项目部署的名称:工程名称跟部署的名称，毛的关系都没有！！一般我们搞一样的
+   String contextPath = context.getContextPath();
+   // 2.2 获取资源的真实路径: /opt/aa/1.jpg c:\\aa\\1.jpg
+   final String realPath = context.getRealPath("index.html");
+   // 2.3 获取文件的扩展名
+   final String mimeType = context.getMimeType("img/2.jpg");
+   // 2.4 共享资源，而且它我们称之为域对象 是Web中最大的一个域对象[在web资源之间进行数据传递]
+   context.setAttribute("age",10);
+   // 2.5 获取到初始化配置参数
+    在这里面，我们可以配置一些全局共享的参数，比如编码
+    昨天的方式：是在每个servlet中单独写 ----》 硬编码
+    应该采用配置文件读取的方式
+
+    2.它的生命周期，何时创建，何时销毁
+        创建：服务器启动时
+        销毁：服务器关闭时
+    3.常用API
+    如何获取ServletContext：
+        ①this.getServletConfig().getServletContext();
+        ②this.getServletContext();
+
+3.request
+    1.作用：获取跟请求相关的信息【请求头-user-agent、referer,更为关心的是请求参数】
+    2.生命周期
+    3.常用API
+        ①获取参数相关
+            // 1.获取单个请求参数 ---> 使用较多
+            final String uname = request.getParameter("uname");
+            // 2.拿到所有参数的map数据 ---》 map ---JavaBean进行映射 ，BeanUtils
+            final Map<String, String[]> parameterMap = request.getParameterMap();
+            // 3.拿到复选框的所有value值
+            final String[] hobbies = request.getParameterValues("hobby");
+            //1.2 获取到请求头信息
+            // 1.获取某个请求头信息，比如userAgent，若做文件下载，文件名为中文的
+            // 话，可能要考虑一个浏览器兼容性问题 ，编码不一样
+            final String userAgent = request.getHeader("user-agent");
+        ②TODO  获取BaseUrl：拼接出 http://xxx:8080/aa
+            做文件上传，可能会用到！！！！
+        ③其他非常重要的方法
+            1.获取项目名称 ---》 常用这种方式
+                    final String contextPath = request.getContextPath();
+            2.回归到context的作用 ----》参考ServletContext
+                    final ServletContext context = request.getServletContext();
+            3.可以作为域对象传递数据:只能在一次请求中有效
+                    request.setAttribute("age",10);
+                    System.out.println("getAttribute:"+request.getAttribute("age"));
+            4.解决post请求乱码的问题
+                request.setCharacterEncoding("utf-8");
+            5.做请求的转发
+4.转发和重定向 *****超级重重点 【基础高频面试】
+	            转发	        重定向
+浏览器地址栏	不会变化	            会变化
+Request	    同一个请求	        两次请求
+API	        Request对象	        Response对象
+位置	    服务器内部完成	    浏览器完成
+WEB-INF	    可以访问	            不能访问
+共享request域数据	可以共享	        不可以共享
+目标资源	必须是当前Web应用中的资源	    不局限于当前Web应用
+
+// TODO 你实现将之前的login.html,以及regist.html 放到WEB-INF
+
+
+5.关于路径的问题补充
+url-pattern：
+转发的路径：
+> 这两个的绝对路径由服务器解析，相对于项目的根目录
+http://主机地址:端口号/项目名/
+
+重定向的路径：
+页面中的路径：
+> 这两个路径由浏览器解析，相对于服务器的根目录
+http://主机地址:端口号/
+
+作业：
+1.你实现将之前的login.html,以及regist.html 放到WEB-INF
+2.案例1：记录网站登录成功的人数 ---》serveltContext的这个域对象
+3.案例3：点击切换验证码 尝试用Hutool试一下
+    需求
+    分析
+    代码实现
+      index.html
+      CodeServlet

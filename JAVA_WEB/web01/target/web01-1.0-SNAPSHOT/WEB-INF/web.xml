@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
+         version="4.0">
+    <servlet>
+        <!--给Servlet起一个名称，一般使用简单类名即可-->
+        <servlet-name>HellerServlet</servlet-name>
+        <!--作用，给tomcat使用，去创建对象-->
+        <servlet-class>com.iweb.HellerServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+
+    </servlet>
+
+    <servlet-mapping>
+        <!--根据下面的url-pattern 找到 servlet-name
+            注意：此处的servlet -name 需要跟上面的一致
+        -->
+        <servlet-name>HellerServlet</servlet-name>
+        <!--这玩意，就是我们待会请求的资源路径,给我们的浏览器看的
+            http://localhost:8080/项目名称/HellerServlet
+        -->
+        <url-pattern>/HellerServlet</url-pattern>
+    </servlet-mapping>
+</web-app>

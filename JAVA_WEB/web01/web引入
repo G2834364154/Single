@@ -1,0 +1,248 @@
+一、Web引入
+1.web服务器是什么
+	提供web服务的机器
+	我们开发完的应用，如何提供给别人使用，此时需要通过web服务器发布出去！！
+	
+2.资源的分类
+	静态资源：前面几天学的网页，就是静态资源！！我们每个人看到都一样，若要不一样，需要修改源码。
+	动态资源：不同的时间或者不同的人访问的时候内容可能会发生变化
+
+3.web技术分类
+	静态：html css js、vue、....
+	动态：比如Servlet、jsp
+
+4.关于协议
+	我们在应用层使用的是http/https协议
+	请求、响应模式！！
+	请求：客户端向服务器发送的内容
+	响应：服务器返回给客户端的内容
+
+5.服务器的分类
+	根据提供的服务不同，我们对服务器进行不同的分类：
+	各自都有对应的软件去搭建
+	1.email：邮件服务器
+	2.图片：图片服务器
+	3.部署web项目：web服务器 
+
+6.常见的web服务器
+	①*tomcat：apache基金会的，免费开源，小巧精悍！！！
+		可部署单机[小型]、可搭集群！！！！！[中大型]
+		支持大部分的JavaEE规范！！！比如Servlet、Filter、JDBC等等
+	②*Weblogic：Oracle，收费的！支持大型的web应用！！
+	③*websphere：IBM，跟Weblogic
+	④IIS：ASP .net系列,java这块不用！！
+	⑤JBOSS：JBOSS，大型服务器，收费的！
+	⑥GlassFish:Oracle，不更新了，以前也是免费的！！
+	⑦*Apache：web服务器！！！免费的！！！
+	⑧*Nginx：大鼻子搞的,俄罗斯，战斗名族！！
+		功能非常非常至多，而且他是通过各种模块[类似我们讲的插件]
+		比如常用的功能：负载均衡、反向代理、静态分离。。。。。
+		
+二、Tomcat的安装与配置
+	这个小猫，也是java写的！若要自己写个简单的服务器，肯定需要socket技术！！
+	Tomcat:web服务器软件，将我们的项目打包war，放入到tomcat中，
+		启动tomcat，就可以将项目发布出去，此时就可以对外提供服务！！！
+	安装与配置，就一个解压即可！！！非中文、非空格即可！
+	至于TOMCAT_HOME以及path，这块可以不配，即使待会运行不起来，
+	只要IDEA能够集成进去，能够跑起来项目即可！！！
+	目录结构简介：了解
+		bin *:JDK有没有bin，放可执行脚本命令
+			xx.bat  --->win下面的脚本
+			xx.sh   --->linux下面的脚本
+		conf *：配置文件
+		lib：这个服务器自身需要依赖的包！！
+		logs *:产生的各种日志
+			在以后的学习过程中，要学会看log[发现问题，log中都有记录！！！]
+		temp:临时文件
+		webapps *:放你的项目，如果放的是一个war，它会自动解压！
+		work：临时的一个工作目录！！
+	
+	启动与关闭：
+		常见的问题，一闪而过！一个原因：可能你的jdk配置
+		启动：startup.bat -->双击即可
+		关闭：shutdown.bat --》双击即可
+			或者ctrl + c
+	
+	默认端口：8080
+		若改成80端口，在访问的时候，无需加端口号 
+			locahost,域名,ip地址即可！！！Nginx默认就是80
+	
+三、IDEA整合Tomcat	
+	详细过程：参见《导图》和视频
+	可能遇到的问题：
+		1.404 --》找不到资源，你要看你的资源路径对不对
+		2.WEB-INF:该目录下的资源，不能直接访问！！！！！
+
+四、Servlet
+	1.为什么用[作用]
+		1.需要有人接收前端页面的输入[接收请求参数]
+		2.处理我们的请求参数[处理请求]
+		3.给用户一个响应 [给出响应]
+	
+	2.是什么
+		Servlet是JavaWeb三大组件之一，
+		是运行在服务端的一个程序[一个资源]！！
+		
+	
+	3.如何用 ---》helloWord切入
+		配置版：
+		1.需要导入jar包，或是引入maven的依赖
+			注意：导包方式，若用的是Eclipse，可以省略
+			包放在：WEB-INF目录下，新建一个lib目录
+		
+		2.编写一个类
+			有如下几种实现方式：
+			1.A implements Servlet ===》 不用
+				用它去讲 生命周期 ，以及运作流程
+				默认：在我们启动tomcat，并没有执行我们的构造方法！！！
+				而是在我们第一次访问整个servlet的时候[url-pattern]，分别执行
+				生命周期方法【面试】：
+					构造、init()、service()、destroy()
+					①构造：默认是第一次访问的时候，执行1次 ===》 单例
+					②init():紧随构造之后，可以做一些初始化工作,执行1次
+					③service():每请求一次，执行一次，就是写我们的业务方法，执行多次
+					④destroy()：在停止服务器的时候，会执行，执行一次，一般可以做一些扫尾工作，
+						比如释放资源.....
+					能否改变Servlet的创建时机？？？？  ok
+					<load-on-startup>1</load-on-startup>
+					
+				【面试】你能不能说一说我们Servlet的执行流程
+					1.访问url-pattern,通过url-pattern
+					2.在servlet-mapping中，根据配置的servlet-name ,找到跟它对应的Servlet标签下的
+						servlet-name
+					3.根据servlet-name，进而找到servlet-class【全类名】
+					4.最终要帮我们造对象，需要有人帮我们创建对象[此时这个工作交给我们的Tomcat处理
+						利用反射创建对象]
+			2.A extends GenericServlet ===》不用
+				最为核心的方法是service()，继承这种方式，只需要实现service()方法即可
+				class aa extends GenericServlet {
+					@Override
+					public void service(ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException, IOException {
+						
+					}
+				}
+			3.A extends HttpServlet    ===》开发掌握实际使用
+				这种方式，只需要重写doGet()和doPost()即可
+				HttpServlet的实际运作流程：
+					1.这个类继承了GenericServlet，重写了如下方法
+						service(ServletRequest,ServelResponse);
+					2.在1的过程中做了如下事情：
+						强转
+							ServletRequest ==》 HttpServletRequest
+							ServelResponse ==》 HttpServelResponse
+						调用了自己重载的service(HttpServletRequest,HttpServelResponse)方法
+					3.在重载的service方法中，干了什么事情？？？
+						获取到你的 请求方式 ：get、post、put、delete、trace...
+						根据你的方式的不同，使用了多重if，进行不同的业务处理
+						
+			
+		3.编写配置
+			web.xml中进行配置 ====》 后面使用注解版
+			便于理解整个运行流程
+			<servlet>
+				<!--给Servlet起一个名称，一般使用简单类名即可-->
+				<servlet-name>HellerServlet</servlet-name>
+				<!--作用，给tomcat使用，去创建对象-->
+				<servlet-class>cn.azzhu.HellerServlet</servlet-class>
+			</servlet>
+		
+			<servlet-mapping>
+				<!--根据下面的url-pattern 找到 servlet-name
+					注意：此处的servlet -name 需要跟上面的一致
+				-->
+				<servlet-name>HellerServlet</servlet-name>
+				<!--这玩意，就是我们待会请求的资源路径,给我们的浏览器看的
+					http://localhost:8080/项目名称/HellerServlet
+				-->
+				<url-pattern>/HellerServlet</url-pattern>
+			</servlet-mapping>
+		
+	关于url-pattern乱写的问题
+	Caused by: java.lang.IllegalArgumentException: Invalid <url-pattern> [HellerServlet] in servlet mapping  ====》无效的url-pattern
+		at org.apache.catalina.core.StandardContext.addServletMappingDecoded(StandardContext.java:3175)
+		at org.apache.catalina.core.StandardContext.addServletMappingDecoded(StandardContext.java:3162)
+		at org.apache.catalina.startup.ContextConfig.configureContext(ContextConfig.java:1376)
+		at org.apache.catalina.startup.ContextConfig.webConfig(ContextConfig.java:1156)
+		at org.apache.catalina.startup.ContextConfig.configureStart(ContextConfig.java:769)
+		at org.apache.catalina.startup.ContextConfig.lifecycleEvent(ContextConfig.java:299)
+		at org.apache.catalina.util.LifecycleBase.fireLifecycleEvent(LifecycleBase.java:94)
+		at org.apache.catalina.core.StandardContext.startInternal(StandardContext.java:5063)
+		at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:150)
+		... 44 more
+27-Jul-2020 11:41:46.914 严重 [RMI TCP Connection(3)-127.0.0.1] org.apache.tomcat.util.modeler.BaseModelMBean.invoke Exception invoking method manageApp
+	java.lang.IllegalStateException: ContainerBase.addChild: start: org.apache.catalina.LifecycleException: Failed to start component [StandardEngine[Catalina].StandardHost[localhost].StandardContext[/JavaWeb01_0727]]
+		at org.apache.catalina.core.ContainerBase.addChildInternal(ContainerBase.java:747)
+		at org.apache.catalina.core.ContainerBase.addChild(ContainerBase.java:719)
+		at org.apache.catalina.core.StandardHost.addChild(StandardHost.java:714)
+		at org.apache.catalina.startup.HostConfig.manageApp(HostConfig.java:1720)
+		at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+		at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+		at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+		at java.lang.reflect.Method.invoke(Method.java:498)
+		at org.apache.tomcat.util.modeler.BaseModelMBean.invoke(BaseModelMBean.java:287)
+	
+		注解版：
+			@WebServlet("/hello")
+			说明：默认没有配置name=""，就是采用的简单类名
+				若只给了上面的这种，就是一个url-pattern 
+	
+五、关于常用的api
+	1.ServletConfig: ===> 不怎么用，了解
+		获取跟当前servlet配置相关的信息
+		如何调用：
+		①若使用的是实现Servlet接口的方式，需要模仿GenericServlet
+		②我们这里使用的是继承HttServlet的方式，我们只需要
+			public interface ServletConfig {
+				String getServletName();	//获取servlet的名称，没啥鸟用
+				ServletContext getServletContext() ****;	//获取Servlet的上下文信息，能够拿到的信息很多 
+				String getInitParameter(String var1);	//没啥鸟用
+				Enumeration<String> getInitParameterNames(); //没啥鸟用
+			}
+			重点掌握：ServletContext getServletContext()
+				其他作为了解
+		何时创建：
+			服务器创建servlet的同时,也创建了当前servlet的配置对象
+			通过servlet的init方法传递给当前servlet
+		a.初始化参数如何配置
+			①可以在web.xml中，通过如下标签[在servlet的肚子里面]进行配置
+			        <init-param>
+						<param-name></param-name>
+						<param-value></param-value>
+					</init-param>
+			②注解版的写法：
+				
+	2.ServletContext：非常非常之重要，明天说
+	
+六、关于url-pattern的问题
+	1.常见的写法: 
+		/路径名称 
+		*.后缀名，常见的后缀名有 *.action，*.html，*.do
+	2.注意的问题
+		①一个Servlet可以配置多个url-pattern
+		②一个url-pattern 只能对应一个Servlet，否则会报如下错误
+		Caused by: java.lang.IllegalArgumentException: The servlets named [cn.azzhu.HellerServlet2] and [HelloServlet3] are both mapped to the url-pattern [/hello3] which is not permitted
+		
+七、模拟一个登录
+	遇到的问题：响应乱码问题？有没有请求乱码问题？？？
+	Servlet端：采用的是IOS8859-1，
+	而我们的浏览器解析用的是UTF-8
+	
+	解决方案：在响应到达浏览器之前，我们将其编码为UTF-8
+		此时需要设置响应的内容
+	
+作业：
+	实现从Controller -----》db的登录、注册功能
+	login.html ===> index.html 
+	regist.html ===> 数据能进db，插入成功与否，你在哪显示随便你
+	//TODO 思考：有没有必要搞两个Servlet？？？？？？？
+	密码加密？？随便你。。。。
+	User表的说明
+		id:主键自增 int型
+		username：加一个约束，不能为null  varchar
+		password：加一个约束，不能为null  varchar  密码加密
+		nickname:昵称 ，允许为null
+		picpath：允许为null 头像的路径
+	验证码：搞不搞随便你
+		
+		
+	

@@ -1,0 +1,32 @@
+1.jsp的一个动作指令，掌握一个转发
+<jsp:forward page="${pageContext.request.contextPath}/WEB-INF/login.jsp" />
+并且，还可以通过<jsp:param>传递一些初始化参数！！！
+
+2.JSTL残余标签
+JSTL标签的分类：
+    1.core：简称c标签
+    2.fmt：一般做一些格式化操作，格式化日期
+    3.fn：做一些函数处理，比如数值取小数点后面几位
+    4.sql、xml  pass掉！！！！！
+
+2.1 c标签
+    c:if ---> 讲过
+        明确：没有c-if-else，想用这个功能，两种方式
+        ①写两个c:if
+        ②c:choose c:when(可以有多个) c:otherwise
+            类似多重if
+    c:foreach --->讲过
+
+2.2 fmt标签
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+    掌握一个：格式化日期
+    <fmt:formatDate value="${time} " pattern="yyyy-MM-dd"/>
+
+2.3 fn函数:了解，用的不多！！
+   对字符串等进行操作
+   <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+
+作业讲解：
+    1.查看
+        带着id去向CustomerServlet发一个请求，根据id查询数据 Customer
+        将Customer，放到request域中，然后跳转到view.jsp显示！！

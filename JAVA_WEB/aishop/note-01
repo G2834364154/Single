@@ -1,0 +1,56 @@
+1.软件开发大体流程
+需求分析  ----》需求文档
+产品  ----》产品原型[Axure] money很高
+UI设计 ---》出图
+前端 ----》形成静态页面 html、前后端分离[前端项目]、jsp
+统领角色 ---》项目经理
+后端RD  ----》Java为主，实现各种功能，以及性能优化！！！
+	需要自测 ---》单元测试
+测试 QA  ---》
+	对你提交的测试需求，有问题，提交bug让你去修复！！！
+	比如：一些项目管理工具，禅道、Jira
+上线 ---》运维
+	注意：不要产品给你什么需求你都接！！！！
+	PM、RD、QA、OP
+
+2.软件开发模型
+	1.瀑布模型：
+		适合传统项目，更新没那么频繁，且修改没那么频繁
+	2.敏捷式开发：
+		一般适合互联网项目，迭代频率比较快！！小步快跑！！！！
+
+3.经分【经营分析---》各种图标】
+
+4.后台管理系统
+	这里面使用EasyUI ---》这个目前使用的没那么多了
+	其他的前端[后台的前端] --》layui[蛮好用的]、.....
+	
+5.MVC软件开发模式
+	M：model 模型层，数据模型[JavaBean,跟dao挂钩]，业务模型[Service]
+	C: Controller层，控制器层，目前以Servlet充当
+	V：View，视图层，jsp 、html、vue.....
+
+6.之前的Servlet有没有什么弊端？？？
+	1.在每个Servlet中，写了多重if 或者 switch login()
+		能否省略？？？？ok，写BaseServlet 【要使用反射调用方法】
+		Method m1.invoke()
+	2.将异常能否统一处理？？？ ===》ok 
+		Service、Servlet处理 
+	3.每次我们都要doGet /doPost() ====》能否省  ===》ok 
+		login()
+
+7.关于ThreadLocal的用法
+private static ThreadLocal<Connection> tl=new ThreadLocal<>();
+
+conn.setAuto(false)  getConn.setAuto
+修改					修改
+conn.commit()		 commitAndClose()	
+本来conn应该是同一个对象，后者获取方式，可能导致不是同一个对象
+[某一个在干各种操作]
+引入：ThreadLocal的目的是保证线程安全！！！！
+	ThreadLocal：栈封闭，底层使用的map结构！！！！
+常用方法：
+	1.get()
+	2.set()
+
+	

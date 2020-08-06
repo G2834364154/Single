@@ -1,0 +1,161 @@
+一、回顾
+1.request的作用，即能获取哪些重要信息     陈雪
+2.转发和重定向的区别                     池宜峰
+3.如何解决请求和响应的乱码问题            任治厅
+4.ServletContext的作用、如何获取、生命周期   何星雨
+request、response、ServletConfig、ServletContext
+    ===》 颠覆了我们之前创建对象的方式 ===》Spring就是这么干
+    ===》缺钱，老娘给点钱【共产主义】 ===》自力更生
+
+二、今日内容
+明确：在web项目中，要传递[共享数据]，靠域对象
+1.response
+    作用：
+        ①实现重定向：必须掌握 resp.sendRedirect();
+        ②向浏览器返回信息，在这里可以写html代码
+            但是不这么干！！！！
+    几个常见的状态码：
+        200：ok
+        404：找不到资源，看你的请求路径对不对
+        500：你的代码有没有问题【比如各种异常】，找不到某个类[包有没有导进来]
+        302：重定向
+
+    实现下载：需要知道的
+        需要设置2头1流即可
+            1头：minetype
+            2头：header，设置以附件形式下载
+            1流：输出流
+      注意：
+        ①我们直接使用a标签连接的话，浏览器能够识别文件格式，它会自动打开
+        ②我们期望的是，不管什么格式，都下载！！！
+
+2.JSP
+    1.为什么要用？？？
+        明确：我们通过servlet处理后的数据，放在域中，在html页面中无法展示[目前的知识储备不足以支撑]
+            所以，可以通过jsp进行显示！！！！
+            在我们的Servlet中，也可以写html代码！！！但是我们的Servlet的特长是处理逻辑！！！
+            目标是实现分离：一个专注于业务代码[servlet]，一个专注于显示[jsp]
+    2.是什么
+        Java Server page :运行在服务器端！！！是服务端的一个资源！！
+        本质：还是Servlet，Servlet能干什么，jsp也可以干什么
+        public final class index_jsp extends org.apache.jasper.runtime.HttpJspBase
+            implements org.apache.jasper.runtime.JspSourceDependent,
+                         org.apache.jasper.runtime.JspSourceImports
+        public abstract class HttpJspBase
+            extends javax.servlet.http.HttpServlet
+            implements javax.servlet.jsp.HttpJspPage
+        ①当我们第一次访问我们的index.jsp的时候，会将index.jsp变为
+            index_jsp.java文件
+            我们在index.jsp中写的html的代码，会在_jspService方法中，、
+            通过输出流写出去
+        ②同时，还会将index_jsp.java编译为index_jsp.class文件
+        一句话:jsp中的所有内容，都体现在java文件中！！！！
+    3.语法：so easy
+       组成部分：html[模板元素]+java[淡化--》Servlet]+jsp特有的内容[学这个！！]
+
+    jsp的脚本
+        1.脚本片段<% %>：在_jspService中，即成为局部变量
+        2.声明<%! %>：作为类的成员部分【成员变量，方法】
+        3.输出语句<%= %>:会在java文件中，通过流的方式写到浏览器
+            out.print(bb);
+     练习：在jsp中，搞一个List<User>，使用上面的脚本，配合表格[需要拼接脚本片段]
+        遍历出用户数据[2-3列，2-3行即可]
+    jsp的注释  :略
+    jsp的指令：告诉页面的一些属性和行为
+        <%@ %>
+        三大指令：
+            ①page指令：属性很多
+            ②taglib指令：下午讲JSTL说
+            ②include指令【静态包含】：包含另外一个页面
+                会将a.jsp原封不动的整体搬过来！！！
+                作用：抽取公共页面！！！！！
+    jsp的内置对象(9个隐式对象)
+        request   HttpServletRequest
+        response  HttpServletResponse
+        out   JspWriter
+        session   HttpSession
+        exception  Throwable
+        page   Servlet(this)
+        config   ServletConfig
+        application  ServletContext
+        pageContext (了解) PageContext
+    jsp中的四个域对象 *****
+        pageContext
+          当前页面:主要用它可以获取到其他对象，一般在页面中就是获取当前项目名称
+          ${pageContext.request.contextPath} ==>EL替换输出表达式
+        request
+          当前请求
+        session
+          当前会话：只要你的浏览器不关闭，就有效！！单独的知识点
+        application
+          当前项目
+          注意：在域的查找过程中，若没有指定范围，默认从小到大进行全域查找
+            也根据范围去找！！后面在用el的过程，一般都不写范围！！！
+    需求：
+        使用jsp实现JobList、Customer的CRUD管理
+3.EL和JSTL
+   EL:表达式语言Expression Language
+    作用：替换我们的输出表达式 <%=%>
+   语法：${}
+    常见的用法之获取数据：【默认全域从小大查找】
+        ①获取单个值：${username}
+        ②获取某个对象的getXxx的值：${user.username}
+        ③获取list数据：${list}
+            一般需要遍历这个数据，结合JSTL去遍历！！！！
+        ④获取map数据：${map.key} ---使用的不是很多
+    执行运算：
+        gt lt eq or and
+            判空1:${empty users}
+            判空2:${! empty users}
+            判空3:${not empty users}
+            <input type="checkbox" ${not empty loginUser ? 'checked':''}>你
+         注意：非空返回false
+
+    内置对象：11个
+        1.4个域要知道：一般也不写，全域查找 xxScope
+        2.pageContext:可以获取其他的对象，主要用于获取当前项目名称
+         ${pageContext.request.contextPath}
+        3.param:拿到你的url中的请求参数
+            可以根据url获取来源的一些参数，进行进一步处理
+            比如：我们在cust的第二页，点击一条记录，进行编辑，编辑完之后，还应该回到第二页！！！
+    JSTL
+        跟EL结合使用！！！！！！
+        Java Standard Tag lib :java标准标签库！！！
+        ①需要引入jar，pom依赖
+                <dependency>
+                    <groupId>javax.servlet</groupId>
+                    <artifactId>jstl</artifactId>
+                    <version>1.2</version>
+                </dependency>
+
+                <dependency>
+                    <groupId>taglibs</groupId>
+                    <artifactId>standard</artifactId>
+                    <version>1.1.2</version>
+                </dependency>
+        ②需要在页面中使用taglib指令引入即可
+
+        ③使用
+
+作业：
+    1.回去安装一个插件：lombok
+    2.完善cust的列表数据，使用EL和JSTL
+    3.查看、修改、删除
+        提示：
+            查看：可以直接用表格显示，也可以用form表单显示 ，readOnly属性
+                <a href="custServlet?op=view&id=${cust.id}">
+                CustomerServlet#view
+                    在这个方法中，你应该根据id去查数据，返回Customer
+                    将req.setA....("customer",Customer)
+                    转发到view.jsp页面
+            修改：
+                1.同查看:数据回显
+                2.提交修改input
+                <form action="custServlet?op=update">
+                    <input type=hidden name="id" value=${cust.id}
+                </form>
+                改成功之后，去哪？回到首页，index.jsp【不能没数据吧！！！】
+
+            删除：
+                 <a href="custServlet?op=del&id=${cust.id}">
+                    执行的修改，将status置为0
