@@ -9,6 +9,7 @@ import utils.MyBeanUtils;
 import utils.UUIDUtils;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -129,6 +130,27 @@ public class UserServlet extends BaseServlet {
         //2.调用业务层登录功能
         User loginUser = userService.login(user);
         if (loginUser != null) {
+            //8.7自动登录
+            //1.获取自自动选项
+            final String autoLogin = request.getParameter("autoLogin");
+            if("1".equals(autoLogin)) {
+                //表明你勾选了
+                final Cookie cookie = new Cookie("autoLogin",user.getUsername()+"#"+user.getPassword());
+
+                //设置它的有效期
+                cookie.setMaxAge(60*60*24*7);
+                //写回去
+                response.addCookie(cookie);
+            }else {
+                // 没有勾选 删除cookie
+                Cookie autoLoginCookie = new Cookie("autoLogin", "");
+                autoLoginCookie.setPath("/");
+                autoLoginCookie.setMaxAge(0);
+                response.addCookie(autoLoginCookie);
+            }
+                    //设置有效期
+
+
             //3.登录成功
             //select * from user where username=?  and password=?
             //用户登录成功,将用户信息放入session中

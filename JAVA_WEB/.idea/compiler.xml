@@ -16,6 +16,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="a123" target="1.8" />
       <module name="AiGouBuy" target="1.8" />
       <module name="aigoubuy" target="1.8" />
       <module name="untitled" target="1.8" />

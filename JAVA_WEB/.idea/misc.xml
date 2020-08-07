@@ -12,6 +12,7 @@
     </option>
     <option name="ignoredFiles">
       <set>
+        <option value="$PROJECT_DIR$/a123/pom.xml" />
         <option value="$PROJECT_DIR$/aigoubuy/pom.xml" />
       </set>
     </option>

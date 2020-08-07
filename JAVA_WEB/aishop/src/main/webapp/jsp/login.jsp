@@ -38,7 +38,7 @@ font {
 			<!--
             	描述：菜单栏
             -->
-	<%--		<div class="container-fluid">
+			<div class="container-fluid">
 				<div class="col-md-4">
 					<img src="${pageContext.request.contextPath}/img/logo2.png" />
 				</div>
@@ -53,11 +53,11 @@ font {
 						<li><a href="${pageContext.request.contextPath}/jsp/order_list.jsp">我的订单</a></li>
 					</ol>
 				</div>
-			</div>--%>
+			</div>
 			<!--
             	描述：导航条
             -->
-			<%--<div class="container-fluid">
+			<div class="container-fluid">
 				<nav class="navbar navbar-inverse">
 					<div class="container-fluid">
 						<!-- Brand and toggle get grouped for better mobile display -->
@@ -92,7 +92,6 @@ font {
 					<!-- /.container-fluid -->
 				</nav>
 			</div>
---%>
 	<%--引入公共的header.jsp--%>
 	<%@include file="header.jsp"%>
 
@@ -135,10 +134,11 @@ font {
     <div class="col-sm-offset-2 col-sm-10">
       <div class="checkbox">
         <label>
-          <input type="checkbox"> 自动登录
+			<%--更改name--%>
+          <input type="checkbox" name="autoLogin" value="1" checked="${not empty cookie.autoLogin?'checked':''}"> 自动登录
         </label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         <label>
-          <input type="checkbox"> 记住用户名
+          <input type="checkbox" name="rememberme"> 记住用户名
         </label>
       </div>
     </div>
